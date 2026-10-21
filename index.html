@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#302820"><meta name="description" content="An increasingly unreasonable incremental game about writing one sentence.">
+  <title>One Brain Cell Remaining</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+<div id="game" class="game-shell">
+  <header class="topbar">
+    <div class="brand">one <span>brain cell</span> remaining<small>v5 · the evening is gone</small></div>
+    <div class="resources" aria-live="off">
+      <div><span>brainpower</span><strong id="brainpowerValue">0</strong></div>
+      <div><span>per second</span><strong id="rateValue">0</strong></div>
+      <div><span>notes to self</span><strong id="notesValue">0</strong></div>
+    </div>
+    <div class="header-actions"><button id="soundButton" aria-label="Music and sound settings">♪</button><button id="helpButton" aria-label="How to play">?</button><button id="settingsButton" aria-label="Settings">⚙</button></div>
+  </header>
+  <div class="chapter-bar"><span id="chapterName">1. Open the document</span><span id="chapterLine">One sentence. This should be possible.</span><span id="dayLabel">day 1</span></div>
+  <main class="game-layout">
+    <section class="world-section" aria-label="The room">
+      <div class="scene-toolbar"><div class="room-tabs"><button id="roomTab" class="active">bedroom</button><button id="annexTab" disabled>overflow <span>locked</span></button></div><button id="flipButton">bad decisions ↻ <kbd>F</kbd></button></div>
+      <div id="worldCard" class="world-card">
+        <div class="world-face world-front"><canvas id="roomCanvas" width="960" height="540" aria-label="An exhausted student slouched at a desk. Click to think or inspect objects."></canvas></div>
+        <div class="world-face world-back" inert><div class="tree-header"><div><span class="eyebrow">bad habits, now organised</span><h1>ways to make this worse</h1><p>Three branches of questionable decisions.</p></div></div><div class="tree-scroll"><div id="skillTree" class="skill-tree"></div></div><p id="skillDetail" class="skill-detail">Select a skill to read its effect.</p></div>
+      </div>
+      <div class="scene-caption"><span id="statusText">I genuinely have nothing.</span><span id="thoughtReadout" aria-live="off">click the student · space to think</span></div>
+      <div class="effort-row"><span>effort</span><div id="effortTrack" class="effort-track" role="progressbar" aria-label="Effort" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="effortFill"></i></div><span id="comboLabel">no thoughts</span></div>
+      <div id="buffStrip" class="buff-strip">The usual level of exhaustion.</div>
+      <div class="play-actions"><button id="thinkButton" class="primary">attempt a thought <kbd>space</kbd></button><button id="breakButton">get distracted <span id="breakReady">6 games · 3 difficulties</span></button><button id="autoButton" hidden>auto-buy: off</button></div>
+      <div id="eventBar" class="event-bar" hidden><div><strong id="eventName"></strong><span id="eventTime"></span></div><button id="eventButton">deal with it</button></div>
+      <div id="pinnedQuest" class="pinned-quest"></div>
+      <div class="ability-heading"><span>panic buttons</span><span>keys 1–4 · effects animate in the bedroom</span></div><div id="abilityList" class="ability-list"></div>
+      <div class="room-footer"><span id="nextUnlock"></span><span id="saveStatus">saved locally</span></div>
+    </section>
+    <aside class="notebook" aria-label="Game notebook">
+      <nav class="notebook-tabs" aria-label="Notebook sections"><button data-tab="junk" class="active">desk junk</button><button data-tab="errands">errands <span id="questBadge"></span></button><button data-tab="distractions">distractions</button><button data-tab="tomorrow">tomorrow</button><button data-tab="endings">ways out</button><button data-tab="receipts">receipts</button></nav>
+      <section data-panel="distractions" class="panel" hidden><span class="eyebrow">an impressive amount of wasted time</span><h2>extracurricular problems</h2><p class="margin-note">Six games, three difficulties, a three-leg circuit and twelve permanent stamps. Earn medals to unlock the harder versions.</p><div class="challenge-actions"><button data-arcade-open class="primary">pick a distraction</button><button data-arcade-records>medal cabinet</button></div><div id="challengeSummary" class="paper-box"></div><h3>distraction stamps</h3><p class="margin-note">Each claimed stamp grants snack tokens and permanent +1% production. Stamps and records survive tomorrow.</p><div id="challengeList"></div></section>
+      <section data-panel="junk" class="panel"><div class="panel-heading"><div><span class="eyebrow">things bought instead of starting</span><h2>desk junk</h2></div><span id="upgradeCount"></span></div><div class="buy-controls"><span>buy</span><button data-bulk="1" class="active">1</button><button data-bulk="5">5</button><button data-bulk="max">max</button><span>inspect a model with ⓘ</span></div><p class="margin-note">Evolves at levels 5 / 10 / 20.</p><div id="upgradeList" class="upgrade-list"></div></section>
+      <section data-panel="errands" class="panel" hidden><div class="panel-heading"><div><span class="eyebrow">anything except the assignment</span><h2>side errands</h2></div><span id="questCount"></span></div><p class="margin-note">Finish errands for snack tokens and a Brainpower bonus. Rewards and completed errands survive tomorrow.</p><div id="questList"></div><h3>the canteen</h3><p id="tokenCount"></p><div id="canteen"></div></section>
+      <section data-panel="tomorrow" class="panel" hidden><span class="eyebrow">a problem for another day</span><h2>tomorrow's problem</h2><div class="paper-box"><p>Reset this run’s junk and skills for permanent Notes to Self. Keep errands, tokens, receipts, secrets and endings.</p><strong id="notesPreview"></strong><p id="prestigeHint"></p><button id="prestigeButton" class="primary" disabled>do it tomorrow</button></div><h3>notes that survived</h3><p class="margin-note">Spend notes here. Their lifetime production bonus stays even after spending.</p><div id="perkList"></div></section>
+      <section data-panel="endings" class="panel" hidden><span class="eyebrow">there must be a way out</span><h2>four ways out</h2><p class="margin-note">Collected endings grant a permanent +10% production bonus. Play continues after each ending.</p><div id="endingList"></div><button id="creditsButton" class="subtle">the extremely small credits</button></section>
+      <section data-panel="receipts" class="panel" hidden><div class="panel-heading"><div><span class="eyebrow">unfortunately there is proof</span><h2>receipts</h2></div><span id="achievementCount"></span></div><div id="runStats" class="paper-box"></div><div id="achievementList"></div></section>
+    </aside>
+  </main>
+  <footer class="footer-strip"><span><kbd>space</kbd> think</span><span><kbd>F</kbd> skill tree</span><span><kbd>1</kbd>–<kbd>4</kbd> panic</span><span>assignment: one sentence</span></footer>
+</div>
+<div id="toastStack" class="toast-stack" aria-live="polite"></div>
+<div id="welcome" class="modal-backdrop" hidden><section class="paper-modal welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle"><span class="eyebrow">the assignment</span><h1 id="welcomeTitle">one brain cell remaining</h1><p>One sentence.<br>Still blank.</p><div class="welcome-doodle" aria-hidden="true">( •_•)<br>＿φ____</div><button id="startSound" class="primary">play with music ♪</button><button id="startQuiet" class="subtle">play quietly</button></section></div>
+<div id="modal" class="modal-backdrop" hidden><section id="modalPaper" class="paper-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button id="modalClose" class="close-button" aria-label="Close dialog">×</button><span id="modalEyebrow" class="eyebrow"></span><h2 id="modalTitle"></h2><div id="modalBody"></div></section></div>
+<div id="ending" class="ending-overlay" hidden><section class="ending-paper"><span id="endingEyebrow" class="eyebrow"></span><h1 id="endingTitle"></h1><div id="endingArt" aria-hidden="true"></div><p id="endingSentence"></p><p id="endingAfter" class="small"></p><button id="endingContinue" class="primary">back to the disaster</button></section></div>
+<script src="js/data.js" defer></script><script src="js/models.js" defer></script><script src="js/room.js" defer></script><script src="js/audio.js" defer></script><script src="js/minigames.js" defer></script><script src="js/app.js" defer></script>
+</body></html>
